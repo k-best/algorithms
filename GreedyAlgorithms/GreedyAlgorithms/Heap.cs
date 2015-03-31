@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GreedyAlgorithms
 {
@@ -12,13 +11,38 @@ namespace GreedyAlgorithms
         private readonly Dictionary<TValue, int> _index = new Dictionary<TValue, int>();
         public int Count { get { return _innerStorage.Count; } }
 
-        public TValue GetOrInsert(KeyValuePair<TKey, TValue> element)
+        //public KeyValuePair<TKey,TValue>? GetOrInsert(KeyValuePair<TKey, TValue> element)
+        //{
+        //    int index;
+        //    if (_index.TryGetValue(element.Value, out index))
+        //        return _innerStorage[index];
+        //    Insert(element);
+        //    return null;
+        //}
+
+        private void Check()
         {
-            int index;
-            if (_index.TryGetValue(element.Value, out index))
-                return _innerStorage[index].Value;
-            Insert(element);
-            return default(TValue);
+            for (int i = 0; i < Count/2+1; i++)
+            {
+                var parent = _innerStorage[i].Key;
+                var childIndex1 = (i + 1)*2 - 1;
+                if (childIndex1>Count-1)
+                {
+                    continue;
+                }
+                var child1 = _innerStorage[childIndex1].Key;
+                if(child1.CompareTo(parent)<0)
+                    throw new InvalidOperationException();
+                var childIndex2 = childIndex1 + 1;
+                if (childIndex2 > Count - 1)
+                {
+                    continue;
+                }
+                var child2 = _innerStorage[childIndex2].Key;
+                if (child2.CompareTo(parent) < 0)
+                    throw new InvalidOperationException();
+                var result = Tuple.Create(child2, parent);
+            }
         }
 
         public void RandomizeHead()
@@ -33,25 +57,28 @@ namespace GreedyAlgorithms
 
         public void Insert(KeyValuePair<TKey, TValue> element)
         {
+            var index = Count;
             _innerStorage.Add(element);
-            _index.Add(element.Value, Count - 1);
+            _index.Add(element.Value, index);
             if (Count > 1)
-                RebalanceUp(_innerStorage.Count - 1);
+                RebalanceUp(index);
         }
 
         public bool TryDeleteValue(TValue element, out KeyValuePair<TKey, TValue> value)
         {
             int index;
             value = default(KeyValuePair<TKey,TValue>);
-            var result = _index.TryGetValue(element, out index);
-            if (!result) 
+            if (!_index.TryGetValue(element, out index)) 
                 return false;
-            value = _innerStorage[index];
             SwapElements(index, Count - 1);
+            value = _innerStorage[Count-1];
             _innerStorage.RemoveAt(Count - 1);
-            _index.Remove(value.Value);
-            if (Count > 0)
+            _index.Remove(element);
+            if (Count > 0&&index<Count)
+            {
                 RebalaceDown(index);
+                RebalanceUp(index);
+            }
             return true;
         }
         
@@ -107,8 +134,9 @@ namespace GreedyAlgorithms
         private void SwapElements(int first, int second)
         {
             var firstelement = _innerStorage[first];
-            _innerStorage[first] = _innerStorage[second];
-            _index[_innerStorage[second].Value] = first;
+            var secondElement = _innerStorage[second];
+            _innerStorage[first] = secondElement;
+            _index[secondElement.Value] = first;
             _innerStorage[second] = firstelement;
             _index[firstelement.Value] = second;
         }

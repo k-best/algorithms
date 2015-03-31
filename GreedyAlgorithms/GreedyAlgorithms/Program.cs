@@ -4,37 +4,34 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GreedyAlgorithms
 {
     class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             //SchedulingAlgorithm.Run("c:\\temp\\homework2_1.txt", (w,l)=>w-l);
-            var results = new List<decimal>();
-            for (int i = 0; i < 100; i++)
-            {
-                var result = PMST.Run("c:\\temp\\homework2_1_2.txt");
-                Console.WriteLine("итого: {0}", result);
-                results.Add(result);
-            }
-            var minresult = results.Min();
-            Console.WriteLine("итого: {0}", minresult);
+            var result = PMST.Run("c:\\temp\\largeEWG.txt");
+            Console.WriteLine("итого: {0}", result);
             Console.ReadLine();
         }
     }
 
     public class PMST
     {
+        private static Dictionary<int, Vertex> _vertices;
+
         public static decimal Run(string file)
         {
-            var graph = LoadGraph(file);
+            var sw = new Stopwatch();
+            sw.Start();
+            var graphAndVertices = LoadGraph(file);
             decimal mstLength = 0;
+            var graph = graphAndVertices.Item1;
+            _vertices = graphAndVertices.Item2;
             var begin = graph.ExtractMinValue().Value;
-            Console.WriteLine(begin.Label);
+            Console.WriteLine(begin);
             RecalculateKeys(begin, graph);
             while (graph.Count>0)
             {
@@ -42,48 +39,73 @@ namespace GreedyAlgorithms
                 mstLength += element.Key;
                 RecalculateKeys(element.Value, graph);
             }
+            sw.Stop();
+            Console.WriteLine("итого: {0}", mstLength);
+            Console.WriteLine("за время: {0}", sw.Elapsed);
             return mstLength;
         }
 
-        private static void RecalculateKeys(Vertex begin, Heap<decimal, Vertex> graph)
+        private static void RecalculateKeys(int beginLabel, Heap<decimal, int> graph)
         {
+            var begin = _vertices[beginLabel];
             foreach (var edge in begin.Edges)
             {
-                KeyValuePair<decimal, Vertex> element;
-                if(graph.TryDeleteValue(edge.SecondVertex, out element))
+                KeyValuePair<decimal, int> element;
+                if (graph.TryDeleteValue(edge.To, out element))
                 {
-                    var newKey = edge.Cost.CompareTo(element.Key) < 0 ? edge.Cost : element.Key;
-                    graph.Insert(new KeyValuePair<decimal, Vertex>(newKey, element.Value));
+                    var newKey = edge.Cost < element.Key ? edge.Cost : element.Key;
+                    graph.Insert(new KeyValuePair<decimal, int>(newKey, element.Value));
                 }
             }
         }
 
-        private static Heap<decimal, Vertex> LoadGraph(string file)
+        private static Tuple<Heap<decimal, int>, Dictionary<int, Vertex>> LoadGraph(string file)
         {
-            var graph = new Heap<decimal, Vertex>();
-            var edges = File.ReadAllLines(file).Skip(1).Select(c =>
+            var graph = new Heap<decimal, int>();
+            var sw = new Stopwatch();
+            sw.Start();
+            var lines = File.ReadAllLines(file);
+            var counts = lines[0].Split(' ', '\t');
+            //var vertexcount = int.Parse(counts[0]);
+            //var edgesCount = int.Parse(counts[1]);
+            var edges = lines.Skip(1).Where(c=>!String.IsNullOrWhiteSpace(c)).Select(c =>
             {
                 var values = c.Split(' ', '\t');
                 Debug.Assert(values.Length == 3);
-                return new Edge
+                return new LoadEdge
                 (
                     int.Parse(values[0]),
                     int.Parse(values[1]),
                     decimal.Parse(values[2], NumberStyles.AllowDecimalPoint, new CultureInfo("en-US"))
                 );
             }).ToArray();
+            sw.Stop();
+            Console.WriteLine("загрузка:{0}",sw.Elapsed);
+            var vertices = new Dictionary<int, Vertex>();
             foreach (var edge in edges)
             {
-                const int key = int.MaxValue; //new Edge(edge.FirstVertex.Label, edge.SecondVertex.Label, int.MaxValue);
-                var firstVertex = graph.GetOrInsert(new KeyValuePair<decimal, Vertex>(key, edge.FirstVertex));
-                if(firstVertex!=default(Vertex))
-                    firstVertex.Edges.Add(new Edge(edge.FirstVertex.Label, edge.SecondVertex.Label, edge.Cost));
-                var secondVertex = graph.GetOrInsert(new KeyValuePair<decimal, Vertex>(key, edge.SecondVertex));
-                if (secondVertex != default(Vertex))
-                    secondVertex.Edges.Add(new Edge(edge.SecondVertex.Label, edge.FirstVertex.Label, edge.Cost));
+                TryAddVertex(vertices, edge.From, edge.To, edge.Cost);
+                TryAddVertex(vertices, edge.To, edge.From, edge.Cost);
+            }
+            //Debug.Assert(vertices.Count==vertexcount);
+            
+            foreach (var vertex in vertices)
+            {
+                graph.Insert(new KeyValuePair<decimal, int>(decimal.MaxValue-100, vertex.Key));
             }
             graph.RandomizeHead();
-            return graph;
+            return Tuple.Create(graph, vertices);
+        }
+
+        private static void TryAddVertex(Dictionary<int, Vertex> vertices, int from, int to, decimal cost)
+        {
+            var edge = new Edge(to, cost);
+            Vertex vertex1;
+
+            if (vertices.TryGetValue(from, out vertex1))
+                vertex1.Edges.Add(edge);
+            else
+                vertices.Add(from, new Vertex { Edges = new[] { edge }.ToList() });
         }
     }
 
@@ -105,19 +127,13 @@ namespace GreedyAlgorithms
 
     public class Edge : IComparable<Edge>
     {
-        private Edge() { }
-
-        public Edge(int first, int second, decimal cost)
+        public Edge(int to, decimal cost)
         {
             Cost = cost;
-            FirstVertex = new Vertex{Label = first, Edges = new List<Edge>{this}};
-            var invertedEdge = new Edge{Cost = cost, SecondVertex = FirstVertex};
-            SecondVertex = new Vertex { Label = second, Edges = new List<Edge>{ invertedEdge } };
-            invertedEdge.FirstVertex = SecondVertex;
+            To = to;
         }
 
-        public Vertex FirstVertex { get; set; }
-        public Vertex SecondVertex { get; set; }
+        public int To { get; set; }
         public decimal Cost { get; set; }
         public int CompareTo(Edge other)
         {
@@ -125,9 +141,17 @@ namespace GreedyAlgorithms
         }
     }
 
-    public class Graph
+    public class LoadEdge
     {
-        public List<Vertex> Vertices { get; set; }
-        public List<Edge> Edges { get; set; } 
+        public LoadEdge(int first, int second, decimal cost)
+        {
+            Cost = cost;
+            From = first;
+            To = second;
+        }
+
+        public int From { get; set; }
+        public int To { get; set; }
+        public decimal Cost { get; set; }
     }
 }

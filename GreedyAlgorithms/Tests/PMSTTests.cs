@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using GreedyAlgorithms;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -23,7 +24,6 @@ namespace Tests
             for (int i = 0; i < 100; i++)
             {
                 var result = PMST.Run("c:\\temp\\homework2_1_2_test2.txt");
-                Console.WriteLine("итого: {0}", result);
                 results.Add(result);
             }
             var minresult = results.Min();
@@ -42,6 +42,13 @@ namespace Tests
             }
             var minresult = results.Min();
             Assert.AreEqual(new decimal(1.81), minresult);
+        }
+
+        [TestMethod]
+        public void TestCase4ShouldPass()
+        {
+            var result = PMST.Run("c:\\temp\\largeEWG.txt");
+            Assert.AreEqual(new Decimal(647.66306955), result);
         }
     }
 }
