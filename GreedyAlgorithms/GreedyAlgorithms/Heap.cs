@@ -7,8 +7,21 @@ namespace GreedyAlgorithms
         where TKey : IComparable<TKey>
         where TValue : IEquatable<TValue>
     {
-        private readonly List<KeyValuePair<TKey, TValue>> _innerStorage = new List<KeyValuePair<TKey, TValue>>();
-        private readonly Dictionary<TValue, int> _index = new Dictionary<TValue, int>();
+        private readonly List<KeyValuePair<TKey, TValue>> _innerStorage;
+        private readonly Dictionary<TValue, int> _index;
+
+        public Heap()
+        {
+            _innerStorage = new List<KeyValuePair<TKey, TValue>>();
+            _index=new Dictionary<TValue, int>();
+        }
+
+        public Heap(int count)
+        {
+            _innerStorage = new List<KeyValuePair<TKey, TValue>>(count);
+            _index = new Dictionary<TValue, int>(count);
+        }
+
         public int Count { get { return _innerStorage.Count; } }
 
         //public KeyValuePair<TKey,TValue>? GetOrInsert(KeyValuePair<TKey, TValue> element)
