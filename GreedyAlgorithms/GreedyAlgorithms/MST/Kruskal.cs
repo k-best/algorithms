@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace GreedyAlgorithms.MST
 {
-    public class Kruskal
+    public static class Kruskal
     {
         public static Decimal Run(IEnumerable<string> lines)
         {
@@ -23,9 +23,9 @@ namespace GreedyAlgorithms.MST
                 //Debug.Assert(values.Length == 3);
                 return new
                 {
-                    From = Parse(values[0]),
-                    To = Parse(values[1]),
-                    Cost = DecimalParse(values[2])
+                    From = LoadHelper.Parse(values[0]),
+                    To = LoadHelper.Parse(values[1]),
+                    Cost = LoadHelper.DecimalParse(values[2])
                 };
             }).ToArray();
             sw.Stop();
@@ -51,26 +51,6 @@ namespace GreedyAlgorithms.MST
             Console.WriteLine("итого: {0}", result);
             Console.WriteLine("за время: {0}", swAll.Elapsed);
             return result;
-        }
-
-        private static int Parse(string s)
-        {
-            int value = 0;
-            for (var i = 0; i < s.Length; i++)
-            {
-                value = value * 10 + (s[i] - '0');
-            }
-            return value;
-        }
-
-        private static decimal DecimalParse(string s)
-        {
-            decimal value = 0;
-            for (var i = 2; i < s.Length; i++)
-            {
-                value = value * 10 + (s[i] - '0');
-            }
-            return value/100000000;
         }
     }
 }

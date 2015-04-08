@@ -42,9 +42,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Heap.cs" />
+    <Compile Include="Clustering\MaxSpacing.cs" />
+    <Compile Include="Clustering\MaxClustering.cs" />
     <Compile Include="MST\Kruskal.cs" />
     <Compile Include="MST\Edge.cs" />
     <Compile Include="MST\LoadEdge.cs" />
+    <Compile Include="LoadHelper.cs" />
     <Compile Include="MST\Prim.cs" />
     <Compile Include="MST\Vertex.cs" />
     <Compile Include="Program.cs" />
@@ -54,6 +57,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="clustering_big.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="clustering_test1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="clustering1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="clustering_test2.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

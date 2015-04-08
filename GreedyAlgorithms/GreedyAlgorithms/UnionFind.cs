@@ -102,10 +102,14 @@ namespace GreedyAlgorithms
         private readonly int[] _roots;
         private readonly int[] _rootRanks;
 
+        public int RootCount { get; set; }
+
         public UnionFind(int[] elements)
         {
-            _roots = new int[elements.Length];
-            _rootRanks = new int[elements.Length];
+            var rootCount = elements.Length;
+            _roots = new int[rootCount];
+            _rootRanks = new int[rootCount];
+            RootCount = rootCount;
             foreach (var element in elements)
             {
                 _roots[element] = element;
@@ -117,12 +121,14 @@ namespace GreedyAlgorithms
         {
             _roots = new int[capacity];
             _rootRanks = new int[capacity];
+            RootCount = 0;
         }
 
         public void Add(int value)
         {
             _roots[value] = value;
             _rootRanks[value] = 1;
+            RootCount++;
         }
 
         public Tuple<int, int> Find(int elementValue)
@@ -161,6 +167,7 @@ namespace GreedyAlgorithms
                 _roots[root2.Item1] = root1.Item1;
                 _rootRanks[root1.Item1] = root1.Item2 + 1;
             }
+            RootCount--;
             return true;
         }
     }
