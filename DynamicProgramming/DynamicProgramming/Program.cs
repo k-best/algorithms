@@ -12,7 +12,7 @@ namespace DynamicProgramming
     {
         static void Main(string[] args)
         {
-            var textreader = new StreamReader(typeof(Program).Assembly.GetManifestResourceStream("DynamicProgramming.tspTest.txt"));
+            var textreader = new StreamReader(typeof(Program).Assembly.GetManifestResourceStream("DynamicProgramming.tsp.txt"));
             var result = new TSP().CalculateMinimalCost(textreader);
                 //new APSP().CalculateMinimum(textreader);
             //var result = new KnapSack().CalculateKnapSackProblem(textreader);
@@ -21,43 +21,49 @@ namespace DynamicProgramming
         }
     }
 
-    internal class TSP
+    public class TSP
     {
         public int CalculateMinimalCost(StreamReader textreader)
         {
             var count = int.Parse(textreader.ReadLine());
-            var pathcount = (int)Math.Pow(2, count);
+            
             var sw = new Stopwatch();
             sw.Start();
             var graph = LoadGraph(textreader);
             sw.Stop();
             Console.WriteLine("Loaded for: {0}", sw.Elapsed);
             sw.Restart();
-            //var paths = new IEnumerable<int>[pathcount];
-            var array = new float[pathcount, count+1];
+            
+            return CalculateMinimalCost(count, graph);
+        }
+
+        public int CalculateMinimalCost(int count, Dictionary<Tuple<int, int>, float> graph)
+        {
+            var pathcount = (int) Math.Pow(2, count);
+            var array = new float[pathcount, count + 1];
             for (var i = 0; i < pathcount; i++)
             {
-                for (var j = 0; j < count+1; j++)
+                for (var j = 0; j < count + 1; j++)
                 {
                     array[i, j] = int.MaxValue;
                 }
             }
             array[1, 1] = 0;
 
-            for (var m = 2; m < count+1; m++)
+            for (var m = 2; m < count + 1; m++)
             {
                 IterateSubsets(m, count, array, graph);
             }
 
             int c = (1 << count) - 1;
-            float result=int.MaxValue;
-            for (var i = 0; i < count; i++)
+            float result = int.MaxValue;
+            for (var i = 1; i <= count; i++)
             {
-                var setWithLastHop = array[c, i]+graph[Tuple.Create(i+1,1)];
+                var setWithLastHop = array[c, i] + graph[Tuple.Create(i, 1)];
                 result = result > setWithLastHop ? setWithLastHop : result;
             }
 
-            return (int)Math.Floor(result);
+            return (int) Math.Floor(result);
         }
 
         private void IterateSubsets(int m, int count, float[,] array, Dictionary<Tuple<int, int>, float> graph)

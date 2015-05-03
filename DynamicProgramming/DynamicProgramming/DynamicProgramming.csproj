@@ -74,6 +74,12 @@
   <ItemGroup>
     <EmbeddedResource Include="tspTest.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="tspTest2.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="tspTest3.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
