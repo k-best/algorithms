@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="APSP.cs" />
     <Compile Include="KnapSack.cs" />
     <Compile Include="LoadHelper.cs" />
     <Compile Include="Program.cs" />
@@ -55,6 +56,23 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="knapsacklight.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="apsp1.txt" />
+    <EmbeddedResource Include="apsp2.txt" />
+    <EmbeddedResource Include="apsp3.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="apsptest1.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="apsptest2.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="tsp.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="tspTest.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
