@@ -39,26 +39,13 @@ namespace Tests
         [TestMethod]
         public void TestWithNotGeometricGraphShouldPass()
         {
-            var graph = new Dictionary<Tuple<int, int>, float>
+            var graph = new Dictionary<int, float[]>
             {
-                {Tuple.Create(1, 1), 0},
-                {Tuple.Create(1, 2), 1},
-                {Tuple.Create(1, 3), 4},
-                {Tuple.Create(1, 4), 6},
-                {Tuple.Create(2, 1), 1},
-                {Tuple.Create(2, 2), 0},
-                {Tuple.Create(2, 3), 2},
-                {Tuple.Create(2, 4), 3},
-                {Tuple.Create(3, 1), 4},
-                {Tuple.Create(3, 2), 2},
-                {Tuple.Create(3, 3), 0},
-                {Tuple.Create(3, 4), 5},
-                {Tuple.Create(4, 1), 6},
-                {Tuple.Create(4, 2), 3},
-                {Tuple.Create(4, 3), 5},
-                {Tuple.Create(4, 4), 0}
+                {0, new float[] {0, 1, 4, 6}},
+                {1, new float[] {1,0,2,3} },
+                {2, new float[] {4,2,0,5} },
+                {3, new float[] {6,4,5,0} }
             };
-
 
 
             var result = new TSP().CalculateMinimalCost(4, graph);
