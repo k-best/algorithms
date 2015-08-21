@@ -5,7 +5,7 @@ namespace GreedyAlgorithms
 {
     public class Heap<TKey, TValue>
         where TKey : IComparable<TKey>
-        where TValue : IEquatable<TValue>
+        //where TValue : IEquatable<TValue>
     {
         private readonly List<KeyValuePair<TKey, TValue>> _innerStorage;
         private readonly Dictionary<TValue, int> _index;
