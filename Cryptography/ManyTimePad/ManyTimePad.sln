@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManyTimePad", "ManyTimePad\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CBCandCTR", "CBCandCTR\CBCandCTR.csproj", "{EBA1CFA4-EE83-4516-B2B6-8C5D65120559}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HashingStream", "HashingStream\HashingStream.csproj", "{5EE28A68-46BE-4B63-A15D-CBC2803DAFCD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{EBA1CFA4-EE83-4516-B2B6-8C5D65120559}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBA1CFA4-EE83-4516-B2B6-8C5D65120559}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBA1CFA4-EE83-4516-B2B6-8C5D65120559}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EE28A68-46BE-4B63-A15D-CBC2803DAFCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EE28A68-46BE-4B63-A15D-CBC2803DAFCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EE28A68-46BE-4B63-A15D-CBC2803DAFCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EE28A68-46BE-4B63-A15D-CBC2803DAFCD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
